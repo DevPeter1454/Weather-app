@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 void main() {
   runApp(const MyApp());
+  WidgetsFlutterBinding.ensureInitialized();
 }
 
 class MyApp extends StatelessWidget {
@@ -16,14 +17,12 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
         textTheme: Theme.of(context).textTheme.apply(
-          fontFamily: 'Open Sans',
-          bodyColor: Colors.white,
-        ),
+              fontFamily: 'Open Sans',
+              bodyColor: Colors.white,
+            ),
       ),
       home: const UI(),
       debugShowCheckedModeBanner: false,
-
     );
   }
 }
-

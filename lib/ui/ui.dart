@@ -16,7 +16,8 @@ class _UIState extends State<UI> {
   StreamController sController = StreamController();
   late Stream stream = sController.stream;
   late StreamSubscription subscription;
-  OpenWeather? theData;
+  dynamic theData;
+  List<OpenWeather>? weatherList;
   TextEditingController controller = TextEditingController();
 
   @override
@@ -27,8 +28,9 @@ class _UIState extends State<UI> {
         var data = await Client.weatherCall(event.toString());
         setState(() {
           theData = data;
+          weatherList = data['list'];
         });
-        print(theData!.name);
+        print(theData!);
       }
     });
   }
@@ -77,56 +79,82 @@ class _UIState extends State<UI> {
             ),
           ],
         ),
-        body: Container(
-          height: MediaQuery.of(context).size.height,
-          width: MediaQuery.of(context).size.width,
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [
-                Color(0XFF11103A),
-                Color(0XFF1C1C42),
-                Color(0XFF232452),
-                Color(0XFF2F2D52),
-              ],
-            ),
-          ),
-          child: theData == null
-              ? const SizedBox.shrink()
-              : Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        Text('Today'),
-                        Text(DateFormat.yMMMMEEEEd()
-                            .format(DateTime.now())
-                            .toString()),
-                        // Text('${theData!.temperature.toString()}°C'),
-                      ],
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        
-                        Text('${theData!.temperature.toString()}°C'),
-                        Image.network(
-                      'http://openweathermap.org/img/wn/${theData!.icon}@2x.png',
-                      height: MediaQuery.of(context).size.height / 3,
-                    ),
-                      ],
-                    ),
-                    
-                    Text(
-                      theData!.description,
-                      style: TextStyle(fontSize: 20.0),
-                    ),
-                    Text(theData!.temperature.toString()),
-                    Text("${theData!.name}, ${theData!.country}")
-                  ],
+        body: Column(
+          children: [
+            Expanded(
+              child: Container(
+                height: MediaQuery.of(context).size.height,
+                width: MediaQuery.of(context).size.width,
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      Color(0XFF11103A),
+                      Color(0XFF1C1C42),
+                      Color(0XFF232452),
+                      Color(0XFF2F2D52),
+                    ],
+                  ),
                 ),
+                child: theData == null
+                    ? const SizedBox.shrink()
+                    : Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          Container(
+                            // alignment: Alignment.,
+                              width: 380,
+                              height: 300,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(20),
+                                // color: Colors.white,
+                                gradient: const LinearGradient(
+                                  begin: Alignment.topCenter,
+                                  end: Alignment.bottomCenter,
+                                  colors:[
+                                
+                                    Color(0XFF2A294B),
+                                    Color(0XFF2A294B),
+                                    Color(0XFF2A294B),
+                                    Color(0XFF2A294B),
+                                    Color(0XFF2A294B),
+                                  ]
+                                )
+                              ),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceAround,
+                                    children: [
+                                      // Text('Today'),
+                                      Text(DateFormat.yMMMMEEEEd().format(weatherList![0].date )),
+                                    ],
+                                  ),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceAround,
+                                    children: [
+                                      Text(
+                                          '${weatherList![0].temperature.toString()}°C'),
+                                      Image.network(
+                                        'http://openweathermap.org/img/wn/${weatherList![0].icon}@2x.png',
+                                       
+                                      ),
+                                      //
+                                    ],
+                                  ),
+                                  Text('${theData!['others']['name']}'
+                                      .toString()),
+                                ],
+                              ))
+                        ],
+                      ),
+              ),
+            ),
+          ],
         ));
   }
 }
